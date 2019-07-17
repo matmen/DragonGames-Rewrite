@@ -1,0 +1,11 @@
+name: DragonGames
+version: 4.0.0
+author: matmen
+website: almost-never.online
+
+main: main.DragonGames
+
+commands:
+    dg:
+       description: DragonGames
+       usage: /<command>
