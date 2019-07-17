@@ -77,6 +77,61 @@ public class InteractionHandler implements Listener {
 				p.getItemInHand().setAmount(newAmount);
 
 			p.updateInventory();
+		} else if (itemType == Material.FIREBALL) {
+			e.setCancelled(true);
+			p.getWorld().createExplosion(p.getLocation(), 0);
+
+			for (Player target : Bukkit.getOnlinePlayers()) {
+				if (target == p || target.getGameMode() != GameMode.SURVIVAL)
+					continue;
+				double distance = target.getLocation().distance(p.getLocation());
+				if (distance > 10)
+					continue;
+				if (distance < 1)
+					distance = 1;
+
+				target.setFireTicks((int) (80 / distance));
+			}
+
+			int newAmount = p.getItemInHand().getAmount() - 1;
+			if (newAmount == 0)
+				p.setItemInHand(null);
+			else
+				p.getItemInHand().setAmount(newAmount);
+
+			p.updateInventory();
+		} else if (itemType == Material.NAME_TAG) {
+			e.setCancelled(true);
+			p.getWorld().createExplosion(p.getLocation(), 0);
+
+			Player nearest = null;
+
+			for (Player check : Bukkit.getOnlinePlayers())
+				if (check != p && check.getGameMode() == GameMode.SURVIVAL && (nearest == null || check.getLocation()
+						.distance(p.getLocation()) < nearest.getLocation().distance(p.getLocation())))
+					nearest = check;
+
+			if (nearest == null || nearest.getLocation().distance(p.getLocation()) > 10)
+				p.sendMessage(DragonGames.prefix + Messages.getString("InteractionHandler.NoNearbyPlayers")); //$NON-NLS-1$
+			else {
+				Location newPlayerLoc = nearest.getLocation().clone();
+				Location newTargetLoc = p.getLocation().clone();
+
+				p.teleport(newPlayerLoc);
+				nearest.teleport(newTargetLoc);
+
+				p.playSound(p.getLocation(), Sound.ENDERMAN_TELEPORT, 50, 0);
+				nearest.playSound(nearest.getLocation(), Sound.ENDERMAN_TELEPORT, 50, 0);
+
+				int newAmount = p.getItemInHand().getAmount() - 1;
+				if (newAmount == 0)
+					p.setItemInHand(null);
+				else
+					p.getItemInHand().setAmount(newAmount);
+
+				p.updateInventory();
+			}
+
 		}
 	}
 

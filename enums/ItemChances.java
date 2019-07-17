@@ -11,6 +11,9 @@ public enum ItemChances {
 	DIAMOND_AXE(new ItemStack(Material.DIAMOND_AXE), 1 / 4 * ItemWeights.WEAPONS_WEIGHT),
 	DIAMOND_SWORD(new ItemStack(Material.DIAMOND_SWORD), 1 / 8 * ItemWeights.WEAPONS_WEIGHT),
 
+	LIGHTER(new ItemStack(Material.FLINT_AND_STEEL), 1 / 4 * ItemWeights.WEAPONS_WEIGHT),
+	FISHING_ROD(new ItemStack(Material.FISHING_ROD), 1 / 6 * ItemWeights.WEAPONS_WEIGHT),
+
 	BOW(new ItemStack(Material.BOW), 1 * ItemWeights.WEAPONS_WEIGHT),
 	ARROW_SINGLE(new ItemStack(Material.ARROW, 1), 1 * ItemWeights.WEAPONS_WEIGHT),
 	ARROW_DOUBLE(new ItemStack(Material.ARROW, 2), 1 / 2 * ItemWeights.WEAPONS_WEIGHT),
@@ -53,10 +56,22 @@ public enum ItemChances {
 
 	GOLDEN_APPLE(new ItemStack(Material.GOLDEN_APPLE), 1 / 4 * ItemWeights.SPECIAL_WEIGHT),
 	ENCHANTED_GOLDEN_APPLE(new ItemStack(Material.GOLDEN_APPLE), 1 / 16 * ItemWeights.SPECIAL_WEIGHT, (short) 1),
+	LAVA_BUCKET(new ItemStack(Material.LAVA_BUCKET), 1 / 16 * ItemWeights.SPECIAL_WEIGHT),
+	WATER_BUCKET(new ItemStack(Material.WATER_BUCKET), 1 / 16 * ItemWeights.SPECIAL_WEIGHT),
 	TRACKER(new ItemStack(Material.COMPASS), 1 * ItemWeights.SPECIAL_WEIGHT,
 			Messages.getString("ItemChances.TrackerName")), //$NON-NLS-1$
 	FORCEFIELD(new ItemStack(Material.NETHER_STAR), 1 / 2 * ItemWeights.SPECIAL_WEIGHT,
-			Messages.getString("ItemChances.ForcefieldName")); //$NON-NLS-1$
+			Messages.getString("ItemChances.ForcefieldName")), //$NON-NLS-1$
+	FIRE_GRENADE(new ItemStack(Material.FIREBALL), 1 / 2 * ItemWeights.SPECIAL_WEIGHT,
+			Messages.getString("ItemChances.FireGrenadeName")), //$NON-NLS-1$
+	SWITCHER(new ItemStack(Material.NAME_TAG), 1 / 2 * ItemWeights.SPECIAL_WEIGHT,
+			Messages.getString("ItemChances.SwitcherName")), //$NON-NLS-1$
+
+	GOLD(new ItemStack(Material.GOLD_INGOT), 1 * ItemWeights.RESOURCE_WEIGHT),
+	IRON(new ItemStack(Material.IRON_INGOT), 1 / 2 * ItemWeights.RESOURCE_WEIGHT),
+	DIAMOND(new ItemStack(Material.DIAMOND), 1 / 8 * ItemWeights.RESOURCE_WEIGHT),
+	STICK(new ItemStack(Material.STICK), 1 / 4 * ItemWeights.RESOURCE_WEIGHT),
+	STICK_DOUBLE(new ItemStack(Material.STICK, 2), 1 / 4 * ItemWeights.RESOURCE_WEIGHT),;
 
 	public ItemStack item;
 	public double probability;
@@ -85,7 +100,8 @@ public enum ItemChances {
 
 class ItemWeights {
 	static int WEAPONS_WEIGHT = 1 / 2;
-	static int ARMOR_WEIGHT = 1 / 2;
+	static int ARMOR_WEIGHT = 1 / 3;
 	static int FOOD_WEIGHT = 1;
-	static int SPECIAL_WEIGHT = 1 / 3;
+	static int SPECIAL_WEIGHT = 1 / 4;
+	static int RESOURCE_WEIGHT = 1 / 5;
 }
