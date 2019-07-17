@@ -30,7 +30,7 @@ public class PlayerTeleporter {
 			while (loc == null) {
 				int x = r.nextInt(borderSize) - borderSize / 2;
 				int z = r.nextInt(borderSize) - borderSize / 2;
-				loc = new Location(w, x, 0, z);
+				loc = new Location(w, x + .5, 0, z + .5);
 
 				int y = w.getHighestBlockYAt(loc);
 				if (!w.getBlockAt(x, y - 1, z).getType().isSolid()) {
