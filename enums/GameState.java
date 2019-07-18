@@ -3,7 +3,7 @@ package enums;
 public enum GameState {
 	STARTING(Messages.getString("GameState.KickMessage.Starting"), false, false, false, false, 0, null, //$NON-NLS-1$
 			Messages.getString("GameState.MOTDRestarting")), //$NON-NLS-1$
-	WAITING_FOR_PLAYERS(null, true, true, false, false, 10, null, Messages.getString("GameState.MOTDLobby")), //$NON-NLS-1$
+	WAITING_FOR_PLAYERS(null, true, true, false, false, 30, null, Messages.getString("GameState.MOTDLobby")), //$NON-NLS-1$
 	IN_PROGRESS_SPAWNED(Messages.getString("GameState.KickMessage.InProgress"), false, false, false, false, 10, //$NON-NLS-1$
 			String.format(Messages.getString("GameState.Broadcast.StartsIn"), 10), //$NON-NLS-1$
 			Messages.getString("GameState.MOTDProgressSpawned")), //$NON-NLS-1$

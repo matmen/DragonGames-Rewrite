@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,7 +23,7 @@ public class DragonGames extends JavaPlugin {
 	public static DragonGames INSTANCE;
 	public static String prefix = Messages.getString("DragonGames.Prefix"); //$NON-NLS-1$
 
-	public static int MIN_PLAYERS = 1;
+	public static int MIN_PLAYERS = 2;
 	public int remainingLobbyTime = GameState.WAITING_FOR_PLAYERS.delay;
 	public int remainingSpawnTime = GameState.IN_PROGRESS_SPAWNED.delay;
 	public int remainingGraceTime = GameState.IN_PROGRESS_GRACE_PERIOD.delay;
@@ -40,6 +41,14 @@ public class DragonGames extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		PluginDescriptionFile info = getDescription();
+		sender.sendMessage(
+				prefix + String.format(Messages.getString("DragonGames.InfoCommand.Version"), info.getVersion())); //$NON-NLS-1$
+		sender.sendMessage(prefix + String.format(Messages.getString("DragonGames.InfoCommand.Authors"), //$NON-NLS-1$
+				String.join(Messages.getString("DragonGames.InfoCommand.AuthorsJoiner"), info.getAuthors()))); //$NON-NLS-1$
+		sender.sendMessage(
+				prefix + String.format(Messages.getString("DragonGames.InfoCommand.Website"), info.getWebsite())); //$NON-NLS-1$
+
 		return true;
 	}
 

@@ -6,6 +6,8 @@ website: almost-never.online
 main: main.DragonGames
 
 commands:
-    dg:
-       description: DragonGames
-       usage: /<command>
+  dragongames:
+   description: DragonGames
+   usage: /<command>
+   aliases:
+    - dg
