@@ -7,7 +7,10 @@ main: main.DragonGames
 
 commands:
   dragongames:
-    description: DragonGames
+    description: DragonGames base command
     usage: /<command>
     aliases:
       - dg
+  player:
+    description: Shows player info
+    usage: /<command> <player>

@@ -85,6 +85,7 @@ public enum ItemChances {
         this.probability = probability;
     }
 
+    @SuppressWarnings("SameParameterValue")
     ItemChances(@NotNull ItemStack item, double probability, short durability) {
         item.setDurability(durability);
         this.item = item;

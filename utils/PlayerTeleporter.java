@@ -1,6 +1,5 @@
 package utils;
 
-import main.DragonGames;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,8 +12,6 @@ import java.util.Random;
 public class PlayerTeleporter {
 
     private static final EntityType[] foodEntities = {EntityType.SHEEP, EntityType.PIG, EntityType.COW, EntityType.CHICKEN};
-    @SuppressWarnings("unused")
-    private DragonGames INSTANCE = DragonGames.INSTANCE;
 
     public static void teleportPlayers() {
         World w = Bukkit.getWorlds().get(0);

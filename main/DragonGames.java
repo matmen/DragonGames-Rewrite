@@ -5,9 +5,13 @@ import events.ConnectionStateHandler;
 import events.DamageHandler;
 import events.InteractionHandler;
 import events.MessageHandler;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -43,14 +47,26 @@ public class DragonGames extends JavaPlugin {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Command cmd, String label, String[] args) {
-        PluginDescriptionFile info = getDescription();
-        sender.sendMessage(
-                prefix + String.format(Messages.getString("DragonGames.InfoCommand.Version"), info.getVersion())); //$NON-NLS-1$
-        sender.sendMessage(prefix + String.format(Messages.getString("DragonGames.InfoCommand.Authors"), //$NON-NLS-1$
-                String.join(Messages.getString("DragonGames.InfoCommand.AuthorsJoiner"), info.getAuthors()))); //$NON-NLS-1$
-        sender.sendMessage(
-                prefix + String.format(Messages.getString("DragonGames.InfoCommand.Website"), info.getWebsite())); //$NON-NLS-1$
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, String label, String[] args) {
+        if (cmd.getName().equals("player")) {
+            if (args.length < 1) return false;
+            Player target = Bukkit.getPlayer(args[0]);
+            if (target == null) {
+                sender.sendMessage(prefix + "Invalid player!");
+            } else {
+                EntityPlayer playerHandle = ((CraftPlayer) target).getHandle();
+                sender.sendMessage(prefix + String.format(Messages.getString("DragonGames.PlayerInfo.Header"), target.getName()));
+                sender.sendMessage(prefix + String.format(Messages.getString("DragonGames.PlayerInfo.Ping"), playerHandle.ping));
+            }
+        } else {
+            PluginDescriptionFile info = getDescription();
+            sender.sendMessage(
+                    prefix + String.format(Messages.getString("DragonGames.InfoCommand.Version"), info.getVersion())); //$NON-NLS-1$
+            sender.sendMessage(prefix + String.format(Messages.getString("DragonGames.InfoCommand.Authors"), //$NON-NLS-1$
+                    String.join(Messages.getString("DragonGames.InfoCommand.AuthorsJoiner"), info.getAuthors()))); //$NON-NLS-1$
+            sender.sendMessage(
+                    prefix + String.format(Messages.getString("DragonGames.InfoCommand.Website"), info.getWebsite())); //$NON-NLS-1$
+        }
 
         return true;
     }
@@ -72,6 +88,11 @@ public class DragonGames extends JavaPlugin {
         pluginManager.registerEvents(new DamageHandler(), this);
         pluginManager.registerEvents(new InteractionHandler(), this);
         pluginManager.registerEvents(new MessageHandler(), this);
+
+        World defaultWorld = Bukkit.getWorlds().get(0);
+        defaultWorld.setSpawnFlags(false, false);
+        for (LivingEntity e : defaultWorld.getLivingEntities())
+            e.remove();
 
         Schedulers.runLobbyCountdown();
     }

@@ -1,6 +1,5 @@
 package events;
 
-import main.DragonGames;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -10,7 +9,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class MessageHandler implements Listener {
-    private DragonGames INSTANCE = DragonGames.INSTANCE;
 
     @EventHandler
     public void onEvent(@NotNull AsyncPlayerChatEvent e) {

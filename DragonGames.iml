@@ -15,25 +15,27 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="module-library">
-      <library name="spigot-1.8.8.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../spigot-1.8.8.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="file://$MODULE_DIR$/../../Spigot/Spigot-API/src/main/javadoc" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../spigot-1.8.8.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../Build/spigot-1.8.8.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="file://$MODULE_DIR$/../../Build/Spigot/Spigot-API/src/main/javadoc" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../Build/spigot-1.8.8.jar!/" />
+          <root url="file://$MODULE_DIR$/../../Build/Spigot/Spigot-API/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../Build/Spigot/Spigot-API/src/main/javadoc" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>
