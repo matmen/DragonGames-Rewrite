@@ -61,13 +61,15 @@ public enum ItemChances {
     LAVA_BUCKET(new ItemStack(Material.LAVA_BUCKET), ItemWeights.SPECIAL_WEIGHT / 16),
     WATER_BUCKET(new ItemStack(Material.WATER_BUCKET), ItemWeights.SPECIAL_WEIGHT / 16),
     TRACKER(new ItemStack(Material.COMPASS), ItemWeights.SPECIAL_WEIGHT,
-            Messages.getString("ItemChances.TrackerName")), //$NON-NLS-1$
+            Messages.getString("ItemChances.TrackerName")),
     FORCEFIELD(new ItemStack(Material.NETHER_STAR), ItemWeights.SPECIAL_WEIGHT / 2,
-            Messages.getString("ItemChances.ForcefieldName")), //$NON-NLS-1$
+            Messages.getString("ItemChances.ForcefieldName")),
     FIRE_GRENADE(new ItemStack(Material.FIREBALL), ItemWeights.SPECIAL_WEIGHT / 2,
-            Messages.getString("ItemChances.FireGrenadeName")), //$NON-NLS-1$
+            Messages.getString("ItemChances.FireGrenadeName")),
     SWITCHER(new ItemStack(Material.NAME_TAG), ItemWeights.SPECIAL_WEIGHT / 2,
-            Messages.getString("ItemChances.SwitcherName")), //$NON-NLS-1$
+            Messages.getString("ItemChances.SwitcherName")),
+    BANDAGE(new ItemStack(Material.PAPER), ItemWeights.SPECIAL_WEIGHT / 2,
+            Messages.getString("ItemChances.BandageName")),
 
     GOLD(new ItemStack(Material.GOLD_INGOT), ItemWeights.RESOURCE_WEIGHT),
     IRON(new ItemStack(Material.IRON_INGOT), ItemWeights.RESOURCE_WEIGHT / 2),

@@ -33,7 +33,7 @@ public class ConnectionStateHandler implements Listener {
             p.kickPlayer(INSTANCE.getGameState().kickMessage);
         }
 
-        joinEvent.setJoinMessage(String.format(Messages.getString("ConnectionStateHandler.LobbyJoined"), p.getName())); //$NON-NLS-1$
+        joinEvent.setJoinMessage(String.format(Messages.getString("ConnectionStateHandler.LobbyJoined"), p.getName()));
         p.setGameMode(GameMode.SURVIVAL);
         p.setHealth(20.0D);
         p.setFoodLevel(20);
@@ -41,7 +41,8 @@ public class ConnectionStateHandler implements Listener {
         p.getInventory().clear();
         p.getInventory().setArmorContents(null);
         p.updateInventory();
-        p.teleport(p.getWorld().getSpawnLocation());
+
+        p.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 
         for (PotionEffect potionEffect : p.getActivePotionEffects())
             p.removePotionEffect(potionEffect.getType());
@@ -53,7 +54,7 @@ public class ConnectionStateHandler implements Listener {
 
         if (INSTANCE.getGameState() == GameState.WAITING_FOR_PLAYERS) {
             kickEvent.setLeaveMessage(
-                    String.format(Messages.getString("ConnectionStateHandler.LobbyLeft"), p.getName())); //$NON-NLS-1$
+                    String.format(Messages.getString("ConnectionStateHandler.LobbyLeft"), p.getName()));
             return;
         }
 
@@ -69,7 +70,7 @@ public class ConnectionStateHandler implements Listener {
             loginEvent.disallow(Result.KICK_OTHER, INSTANCE.getGameState().kickMessage);
 
         if (Bukkit.getOnlinePlayers().size() >= Bukkit.getServer().getMaxPlayers())
-            loginEvent.disallow(Result.KICK_FULL, Messages.getString("ConnectionStateHandler.LobbyFull")); //$NON-NLS-1$
+            loginEvent.disallow(Result.KICK_FULL, Messages.getString("ConnectionStateHandler.LobbyFull"));
     }
 
     @EventHandler
@@ -78,7 +79,7 @@ public class ConnectionStateHandler implements Listener {
 
         if (INSTANCE.getGameState() == GameState.WAITING_FOR_PLAYERS) {
             leaveEvent
-                    .setQuitMessage(String.format(Messages.getString("ConnectionStateHandler.LobbyLeft"), p.getName())); //$NON-NLS-1$
+                    .setQuitMessage(String.format(Messages.getString("ConnectionStateHandler.LobbyLeft"), p.getName()));
             return;
         }
 

@@ -8,10 +8,11 @@ import events.MessageHandler;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -24,7 +25,7 @@ import utils.CrateFiller;
 import java.util.HashMap;
 
 public class DragonGames extends JavaPlugin {
-    public static final String prefix = Messages.getString("DragonGames.Prefix"); //$NON-NLS-1$
+    public static final String prefix = Messages.getString("DragonGames.Prefix");
     public static final int MIN_PLAYERS = 2;
     public static DragonGames INSTANCE;
     public final CrateFiller crateFiller = new CrateFiller();
@@ -61,11 +62,11 @@ public class DragonGames extends JavaPlugin {
         } else {
             PluginDescriptionFile info = getDescription();
             sender.sendMessage(
-                    prefix + String.format(Messages.getString("DragonGames.InfoCommand.Version"), info.getVersion())); //$NON-NLS-1$
-            sender.sendMessage(prefix + String.format(Messages.getString("DragonGames.InfoCommand.Authors"), //$NON-NLS-1$
-                    String.join(Messages.getString("DragonGames.InfoCommand.AuthorsJoiner"), info.getAuthors()))); //$NON-NLS-1$
+                    prefix + String.format(Messages.getString("DragonGames.InfoCommand.Version"), info.getVersion()));
+            sender.sendMessage(prefix + String.format(Messages.getString("DragonGames.InfoCommand.Authors"),
+                    String.join(Messages.getString("DragonGames.InfoCommand.AuthorsJoiner"), info.getAuthors())));
             sender.sendMessage(
-                    prefix + String.format(Messages.getString("DragonGames.InfoCommand.Website"), info.getWebsite())); //$NON-NLS-1$
+                    prefix + String.format(Messages.getString("DragonGames.InfoCommand.Website"), info.getWebsite()));
         }
 
         return true;
@@ -89,10 +90,18 @@ public class DragonGames extends JavaPlugin {
         pluginManager.registerEvents(new InteractionHandler(), this);
         pluginManager.registerEvents(new MessageHandler(), this);
 
-        World defaultWorld = Bukkit.getWorlds().get(0);
-        defaultWorld.setSpawnFlags(false, false);
-        for (LivingEntity e : defaultWorld.getLivingEntities())
-            e.remove();
+        WorldCreator wc = new WorldCreator("active_map");
+        Bukkit.getServer().createWorld(wc);
+
+        for (World w : Bukkit.getWorlds()) {
+            w.setSpawnFlags(false, false);
+            w.setAutoSave(false);
+            w.setKeepSpawnInMemory(true);
+
+            for (Entity e : w.getEntities())
+                if (e.getType().isAlive())
+                    e.remove();
+        }
 
         Schedulers.runLobbyCountdown();
     }

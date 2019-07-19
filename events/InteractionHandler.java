@@ -1,6 +1,7 @@
 package events;
 
 import enums.GameState;
+import enums.ItemChances;
 import main.DragonGames;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -34,7 +35,7 @@ public class InteractionHandler implements Listener {
 
         Material itemType = e.getItem().getType();
 
-        if (itemType == Material.COMPASS) {
+        if (itemType == ItemChances.TRACKER.item.getType()) {
             Player nearest = null;
 
             for (Player check : Bukkit.getOnlinePlayers())
@@ -44,14 +45,14 @@ public class InteractionHandler implements Listener {
                     nearest = check;
 
             if (nearest == null)
-                p.sendMessage(DragonGames.prefix + Messages.getString("InteractionHandler.NoNearbyPlayers")); //$NON-NLS-1$
+                p.sendMessage(DragonGames.prefix + Messages.getString("InteractionHandler.NoNearbyPlayers"));
             else {
                 p.sendMessage(
-                        DragonGames.prefix + String.format(Messages.getString("InteractionHandler.TrackerMessage"), //$NON-NLS-1$
+                        DragonGames.prefix + String.format(Messages.getString("InteractionHandler.TrackerMessage"),
                                 nearest.getName(), nearest.getLocation().distance(p.getLocation())));
                 p.setCompassTarget(nearest.getLocation());
             }
-        } else if (itemType == Material.NETHER_STAR) {
+        } else if (itemType == ItemChances.FORCEFIELD.item.getType()) {
             for (Player toApply : Bukkit.getOnlinePlayers()) {
                 double distance = toApply.getLocation().distance(p.getLocation());
                 if (distance > 20)
@@ -73,7 +74,7 @@ public class InteractionHandler implements Listener {
                 p.getItemInHand().setAmount(newAmount);
 
             p.updateInventory();
-        } else if (itemType == Material.FIREBALL) {
+        } else if (itemType == ItemChances.FIRE_GRENADE.item.getType()) {
             e.setCancelled(true);
             p.getWorld().createExplosion(p.getLocation(), 0);
 
@@ -96,9 +97,8 @@ public class InteractionHandler implements Listener {
                 p.getItemInHand().setAmount(newAmount);
 
             p.updateInventory();
-        } else if (itemType == Material.NAME_TAG) {
+        } else if (itemType == ItemChances.SWITCHER.item.getType()) {
             e.setCancelled(true);
-            p.getWorld().createExplosion(p.getLocation(), 0);
 
             Player nearest = null;
 
@@ -108,7 +108,7 @@ public class InteractionHandler implements Listener {
                     nearest = check;
 
             if (nearest == null || nearest.getLocation().distance(p.getLocation()) > 10)
-                p.sendMessage(DragonGames.prefix + Messages.getString("InteractionHandler.NoNearbyPlayers")); //$NON-NLS-1$
+                p.sendMessage(DragonGames.prefix + Messages.getString("InteractionHandler.NoNearbyPlayers"));
             else {
                 Location newPlayerLoc = nearest.getLocation().clone();
                 Location newTargetLoc = p.getLocation().clone();
@@ -127,7 +127,17 @@ public class InteractionHandler implements Listener {
 
                 p.updateInventory();
             }
+        } else if (itemType == ItemChances.BANDAGE.item.getType()) {
+            e.setCancelled(true);
 
+            p.setHealth(Math.max(Math.min(p.getHealth() + 8, p.getMaxHealth() - 4), p.getHealth()));
+            p.playSound(p.getLocation(), Sound.DIG_WOOL, 50, 0);
+
+            int newAmount = p.getItemInHand().getAmount() - 1;
+            if (newAmount == 0)
+                p.setItemInHand(null);
+            else
+                p.getItemInHand().setAmount(newAmount);
         }
     }
 
@@ -145,7 +155,7 @@ public class InteractionHandler implements Listener {
     public void onEvent(@NotNull PlayerInteractEvent playerInteractEvent) {
         Player p = playerInteractEvent.getPlayer();
 
-        if (INSTANCE.getGameState().joinable || !INSTANCE.getGameState().canMove) {
+        if (INSTANCE.getGameState().joinable || !INSTANCE.getGameState().canMove || p.getGameMode() == GameMode.SPECTATOR) {
             playerInteractEvent.setCancelled(true);
             return;
         }
@@ -159,7 +169,7 @@ public class InteractionHandler implements Listener {
 
         Block b = playerInteractEvent.getClickedBlock();
         Location loc = b.getLocation();
-        String location = String.format(Messages.getString("InteractionHandler.CrateLocationKey"), loc.getBlockX(), //$NON-NLS-1$
+        String location = String.format(Messages.getString("InteractionHandler.CrateLocationKey"), loc.getBlockX(),
                 loc.getBlockZ());
         if (b.getType() == Material.DRAGON_EGG) {
             playerInteractEvent.setCancelled(true);
@@ -195,12 +205,22 @@ public class InteractionHandler implements Listener {
 
     @EventHandler
     public void onEvent(PlayerMoveEvent playerMoveEvent) {
-        if (INSTANCE.getGameState() == GameState.WAITING_FOR_PLAYERS)
-            return;
-
         Player p = playerMoveEvent.getPlayer();
         Location from = playerMoveEvent.getFrom().clone();
         Location to = playerMoveEvent.getTo().clone();
+
+        if (INSTANCE.getGameState() == GameState.WAITING_FOR_PLAYERS) {
+            if (to.getY() < 64) {
+                Location spawnLocation = p.getWorld().getSpawnLocation();
+                Vector off = spawnLocation.toVector().subtract(to.toVector()).normalize();
+
+                p.setVelocity(new Vector(off.getX(), 0.75, off.getZ()));
+                p.setFallDistance(0);
+                p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 25, 50);
+            }
+
+            return;
+        }
 
         to.setY(from.getY());
 
@@ -232,7 +252,7 @@ public class InteractionHandler implements Listener {
     private void outOfMap(@NotNull Player p, Vector v) {
         p.setVelocity(v);
         p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 30.0F, 50.0F);
-        p.sendMessage(Messages.getString("InteractionHandler.EndOfMap")); //$NON-NLS-1$
+        p.sendMessage(Messages.getString("InteractionHandler.EndOfMap"));
     }
 
 }

@@ -18,10 +18,10 @@ public class MessageHandler implements Listener {
             e.setCancelled(true);
             for (Player t : Bukkit.getOnlinePlayers())
                 if (t.getGameMode() == GameMode.SPECTATOR)
-                    t.sendMessage(String.format(Messages.getString("MessageHandler.DeadFormat"), p.getName(), //$NON-NLS-1$
+                    t.sendMessage(String.format(Messages.getString("MessageHandler.DeadFormat"), p.getName(),
                             e.getMessage()));
         }
 
-        e.setFormat(Messages.getString("MessageHandler.AliveFormat")); //$NON-NLS-1$
+        e.setFormat(Messages.getString("MessageHandler.AliveFormat"));
     }
 }

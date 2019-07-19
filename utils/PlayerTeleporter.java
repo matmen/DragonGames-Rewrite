@@ -13,9 +13,7 @@ public class PlayerTeleporter {
 
     private static final EntityType[] foodEntities = {EntityType.SHEEP, EntityType.PIG, EntityType.COW, EntityType.CHICKEN};
 
-    public static void teleportPlayers() {
-        World w = Bukkit.getWorlds().get(0);
-        int borderSize = (int) Math.floor(w.getWorldBorder().getSize());
+    public static void teleportPlayers(World w, int borderSize) {
         Random r = new Random();
 
         for (Entity e : w.getEntities())
