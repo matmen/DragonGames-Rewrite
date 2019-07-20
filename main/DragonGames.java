@@ -53,7 +53,7 @@ public class DragonGames extends JavaPlugin {
             if (args.length < 1) return false;
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
-                sender.sendMessage(prefix + "Invalid player!");
+                sender.sendMessage(prefix + Messages.getString("DragonGames.InvalidPlayer"));
             } else {
                 EntityPlayer playerHandle = ((CraftPlayer) target).getHandle();
                 sender.sendMessage(prefix + String.format(Messages.getString("DragonGames.PlayerInfo.Header"), target.getName()));

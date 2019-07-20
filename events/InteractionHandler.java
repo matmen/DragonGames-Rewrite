@@ -3,8 +3,11 @@ package events;
 import enums.GameState;
 import enums.ItemChances;
 import main.DragonGames;
+import net.minecraft.server.v1_8_R3.EnumParticle;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,6 +56,8 @@ public class InteractionHandler implements Listener {
                 p.setCompassTarget(nearest.getLocation());
             }
         } else if (itemType == ItemChances.FORCEFIELD.item.getType()) {
+            p.getWorld().playSound(p.getLocation(), Sound.WITHER_SHOOT, 50, 1);
+
             for (Player toApply : Bukkit.getOnlinePlayers()) {
                 double distance = toApply.getLocation().distance(p.getLocation());
                 if (distance > 20)
@@ -60,11 +65,11 @@ public class InteractionHandler implements Listener {
                 if (distance < 1)
                     distance = 1;
 
-                toApply.playSound(p.getLocation(), Sound.WITHER_SHOOT, (float) (50 / distance), 1);
                 if (toApply == p || toApply.getGameMode() == GameMode.SPECTATOR)
                     continue;
 
-                toApply.setVelocity(toApply.getVelocity().multiply(-20 / distance).setY(1 / distance));
+                toApply.setVelocity(toApply.getVelocity().multiply(-5 / distance).setY(1 / distance));
+                playParticleEffectAtLocation(toApply.getLocation(), distance < 10 ? EnumParticle.EXPLOSION_HUGE : distance < 15 ? EnumParticle.EXPLOSION_LARGE : EnumParticle.EXPLOSION_NORMAL);
             }
 
             int newAmount = p.getItemInHand().getAmount() - 1;
@@ -76,7 +81,8 @@ public class InteractionHandler implements Listener {
             p.updateInventory();
         } else if (itemType == ItemChances.FIRE_GRENADE.item.getType()) {
             e.setCancelled(true);
-            p.getWorld().createExplosion(p.getLocation(), 0);
+            playParticleEffectAtLocation(p.getLocation(), EnumParticle.FLAME, new Vector(2, 0, 2), 10);
+            p.getWorld().playSound(p.getLocation(), Sound.GHAST_FIREBALL, 50, 0);
 
             for (Player target : Bukkit.getOnlinePlayers()) {
                 if (target == p || target.getGameMode() != GameMode.SURVIVAL)
@@ -116,8 +122,12 @@ public class InteractionHandler implements Listener {
                 p.teleport(newPlayerLoc);
                 nearest.teleport(newTargetLoc);
 
-                p.playSound(p.getLocation(), Sound.ENDERMAN_TELEPORT, 50, 0);
-                nearest.playSound(nearest.getLocation(), Sound.ENDERMAN_TELEPORT, 50, 0);
+                Player[] affectedPlayers = {p, nearest};
+
+                for (Player affected : affectedPlayers) {
+                    affected.getWorld().playSound(p.getLocation(), Sound.ENDERMAN_TELEPORT, 50, 0);
+                    playParticleEffectAtLocation(affected.getLocation(), EnumParticle.PORTAL, new Vector(2, 3, 2), 10);
+                }
 
                 int newAmount = p.getItemInHand().getAmount() - 1;
                 if (newAmount == 0)
@@ -131,7 +141,8 @@ public class InteractionHandler implements Listener {
             e.setCancelled(true);
 
             p.setHealth(Math.max(Math.min(p.getHealth() + 8, p.getMaxHealth() - 4), p.getHealth()));
-            p.playSound(p.getLocation(), Sound.DIG_WOOL, 50, 0);
+            p.getWorld().playSound(p.getLocation(), Sound.DIG_WOOL, 50, 0);
+            playParticleEffectAtLocation(p.getLocation(), EnumParticle.VILLAGER_HAPPY, new Vector(1, 3, 1), 5);
 
             int newAmount = p.getItemInHand().getAmount() - 1;
             if (newAmount == 0)
@@ -246,13 +257,41 @@ public class InteractionHandler implements Listener {
 
         if (to.getZ() < -maxLimit)
             outOfMap(p, new Vector(0.0D, 0.2D, 1.0D));
-
     }
 
     private void outOfMap(@NotNull Player p, Vector v) {
         p.setVelocity(v);
         p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 30.0F, 50.0F);
         p.sendMessage(Messages.getString("InteractionHandler.EndOfMap"));
+    }
+
+    private void playParticleEffectAtLocation(Location l, EnumParticle particle) {
+        playParticleEffectAtLocation(l, particle, 1);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private void playParticleEffectAtLocation(Location l, EnumParticle particle, int count) {
+        playParticleEffectAtLocation(l, particle, new Vector(), count);
+    }
+
+    private void playParticleEffectAtLocation(Location l, EnumParticle particle, Vector offset, int count) {
+        playParticleEffectAtLocation(l, particle, offset, 0, count);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private void playParticleEffectAtLocation(Location l, EnumParticle particle, Vector offset, float speed, int count) {
+        float x = (float) l.getX();
+        float y = (float) l.getY();
+        float z = (float) l.getZ();
+
+        float xOff = (float) offset.getX();
+        float yOff = (float) offset.getX();
+        float zOff = (float) offset.getX();
+
+        PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(particle, true, x, y, z, xOff, yOff, zOff, speed, count);
+
+        for (Player particleTarget : Bukkit.getOnlinePlayers())
+            ((CraftPlayer) particleTarget).getHandle().playerConnection.sendPacket(particlePacket);
     }
 
 }

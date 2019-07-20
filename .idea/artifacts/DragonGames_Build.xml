@@ -3,7 +3,6 @@
     <output-path>$PROJECT_DIR$/../Server/plugins</output-path>
     <root id="archive" name="DragonGames.jar">
       <element id="module-output" name="DragonGames" />
-      <element id="file-copy" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar" />
     </root>
   </artifact>
 </component>

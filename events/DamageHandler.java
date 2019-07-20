@@ -62,7 +62,7 @@ public class DamageHandler implements Listener {
 
         p.setHealth(20.0D);
         p.setVelocity(new Vector(0, 3, 0));
-        p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 50.0f, 50.0f);
+        p.getWorld().playSound(p.getLocation(), Sound.WITHER_SHOOT, 50.0f, 50.0f);
         p.setGameMode(GameMode.SPECTATOR);
         e.setDeathMessage(null);
         p.getLocation().getWorld().strikeLightningEffect(p.getLocation());
