@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import schedulers.Schedulers;
 import utils.CrateFiller;
+import world.ChunkGenerator;
 
 import java.util.HashMap;
 
@@ -91,6 +92,7 @@ public class DragonGames extends JavaPlugin {
         pluginManager.registerEvents(new MessageHandler(), this);
 
         WorldCreator wc = new WorldCreator("active_map");
+        wc.generator(new ChunkGenerator());
         Bukkit.getServer().createWorld(wc);
 
         for (World w : Bukkit.getWorlds()) {

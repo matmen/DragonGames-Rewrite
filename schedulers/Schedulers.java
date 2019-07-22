@@ -20,8 +20,8 @@ public class Schedulers {
         INSTANCE.setGameState(GameState.IN_PROGRESS_PVP);
         WorldBorder border = Bukkit.getWorld("active_map").getWorldBorder();
         border.setSize(100, (long) (GameState.IN_PROGRESS_PVP.delay * 0.9));
-        border.setDamageBuffer(0);
-        border.setDamageAmount(0.1);
+        border.setDamageBuffer(1);
+        border.setDamageAmount(0.05);
 
         activeSchedulerID = Bukkit.getScheduler().scheduleSyncRepeatingTask(INSTANCE, () -> {
             INSTANCE.remainingGameTime -= 1;

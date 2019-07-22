@@ -76,6 +76,11 @@ public enum ItemChances {
     DIAMOND(new ItemStack(Material.DIAMOND), ItemWeights.RESOURCE_WEIGHT / 8),
     STICK(new ItemStack(Material.STICK), ItemWeights.RESOURCE_WEIGHT / 4),
     STICK_DOUBLE(new ItemStack(Material.STICK, 2), ItemWeights.RESOURCE_WEIGHT / 4),
+
+    WOOD_PICKAXE(new ItemStack(Material.WOOD_PICKAXE), ItemWeights.RESOURCE_WEIGHT),
+    GOLD_PICKAXE(new ItemStack(Material.GOLD_PICKAXE), ItemWeights.RESOURCE_WEIGHT / 4),
+    IRON_PICKAXE(new ItemStack(Material.IRON_PICKAXE), ItemWeights.RESOURCE_WEIGHT / 4),
+    DIAMOND_PICKAXE(new ItemStack(Material.DIAMOND_PICKAXE), ItemWeights.RESOURCE_WEIGHT / 8),
     ;
 
     public final ItemStack item;
