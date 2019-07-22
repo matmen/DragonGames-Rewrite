@@ -21,13 +21,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import schedulers.Schedulers;
 import utils.CrateFiller;
+import utils.PlayerTeleporter;
 import world.ChunkGenerator;
 
 import java.util.HashMap;
+import java.util.logging.Level;
 
 public class DragonGames extends JavaPlugin {
     public static final String prefix = Messages.getString("DragonGames.Prefix");
-    public static final int MIN_PLAYERS = 2;
+    public static final int MIN_PLAYERS = 1;
     public static DragonGames INSTANCE;
     public final CrateFiller crateFiller = new CrateFiller();
     public final HashMap<String, Inventory> crates = new HashMap<>();
@@ -93,7 +95,14 @@ public class DragonGames extends JavaPlugin {
 
         WorldCreator wc = new WorldCreator("active_map");
         wc.generator(new ChunkGenerator());
-        Bukkit.getServer().createWorld(wc);
+        World activeMap = Bukkit.getServer().createWorld(wc);
+
+        getLogger().log(Level.INFO, String.format("Preparing play area for %1$s..", activeMap.getName()));
+
+        int chunkCount = (int) Math.ceil(PlayerTeleporter.getBorderSize(Bukkit.getServer().getMaxPlayers()) / 16 / 2);
+        for (int spawnOffsetX = -chunkCount; spawnOffsetX <= chunkCount; spawnOffsetX++)
+            for (int spawnOffsetZ = -chunkCount; spawnOffsetZ <= chunkCount; spawnOffsetZ++)
+                activeMap.loadChunk(spawnOffsetX, spawnOffsetZ, true);
 
         for (World w : Bukkit.getWorlds()) {
             w.setSpawnFlags(false, false);

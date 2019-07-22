@@ -81,6 +81,10 @@ public enum ItemChances {
     GOLD_PICKAXE(new ItemStack(Material.GOLD_PICKAXE), ItemWeights.RESOURCE_WEIGHT / 4),
     IRON_PICKAXE(new ItemStack(Material.IRON_PICKAXE), ItemWeights.RESOURCE_WEIGHT / 4),
     DIAMOND_PICKAXE(new ItemStack(Material.DIAMOND_PICKAXE), ItemWeights.RESOURCE_WEIGHT / 8),
+    WOOD_SHOVEL(new ItemStack(Material.WOOD_SPADE), ItemWeights.RESOURCE_WEIGHT / 2),
+    GOLD_SHOVEL(new ItemStack(Material.GOLD_SPADE), ItemWeights.RESOURCE_WEIGHT / 8),
+    IRON_SHOVEL(new ItemStack(Material.IRON_SPADE), ItemWeights.RESOURCE_WEIGHT / 8),
+    DIAMOND_SHOVEL(new ItemStack(Material.DIAMOND_SPADE), ItemWeights.RESOURCE_WEIGHT / 16),
     ;
 
     public final ItemStack item;

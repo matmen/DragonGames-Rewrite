@@ -118,8 +118,8 @@ public class Schedulers {
         INSTANCE.setGameState(GameState.IN_PROGRESS_SPAWNED);
 
         World w = Bukkit.getWorld("active_map");
-        double borderSize = Math.max(Math.pow(Bukkit.getOnlinePlayers().size(), 1.25) * 10, 200);
-        PlayerTeleporter.teleportPlayers(w, (int) borderSize);
+        int borderSize = (int) PlayerTeleporter.getBorderSize(Bukkit.getOnlinePlayers().size());
+        PlayerTeleporter.teleportPlayers(w, borderSize);
 
         WorldBorder border = w.getWorldBorder();
         border.reset();

@@ -48,4 +48,8 @@ public class PlayerTeleporter {
         }
     }
 
+    public static double getBorderSize(int playerCount) {
+        return Math.max(Math.pow(playerCount, 1.25) * 10, 200);
+    }
+
 }
