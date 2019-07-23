@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +19,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
     private static final double amplitude = 0.5;
 
     @Override
-    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biome) {
+    public ChunkData generateChunkData(@NotNull World world, Random random, int chunkX, int chunkZ, BiomeGrid biome) {
         SimplexOctaveGenerator heightmapGenerator = new SimplexOctaveGenerator(new Random(world.getSeed()), 8);
         heightmapGenerator.setScale(0.01D);
 
@@ -43,10 +44,9 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
                 chunk.setBlock(x, currentHeight, z, Material.GRASS);
                 currentHeight--;
 
-                int dirtThickness = (int) Math.abs(dirtThicknessGenerator.noise(chunkX * 16 + x, chunkZ * 16 + z, frequency, amplitude) * 3) + 1;
-                int dirtTo = currentHeight - dirtThickness;
+                int dirtTo = currentHeight - ((int) Math.abs(dirtThicknessGenerator.noise(chunkX * 16 + x, chunkZ * 16 + z, frequency, amplitude) * 2) + 1);
 
-                while (currentHeight >= dirtTo) {
+                while (currentHeight > dirtTo) {
                     chunk.setBlock(x, currentHeight, z, Material.DIRT);
                     currentHeight--;
                 }
@@ -93,6 +93,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 
     @Override
     public List<org.bukkit.generator.BlockPopulator> getDefaultPopulators(World world) {
+        //noinspection ArraysAsListWithZeroOrOneArgument
         return Arrays.asList(new BlockPopulator());
     }
 

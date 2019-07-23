@@ -8,8 +8,10 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -19,6 +21,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -159,7 +162,24 @@ public class InteractionHandler implements Listener {
 
     @EventHandler
     public void onEvent(@NotNull BlockPlaceEvent blockPlaceEvent) {
-        blockPlaceEvent.setCancelled(!INSTANCE.getGameState().canBuild);
+        if (!INSTANCE.getGameState().canBuild) {
+            blockPlaceEvent.setCancelled(true);
+            return;
+        }
+
+        ItemStack inHand = blockPlaceEvent.getItemInHand();
+        Block blockPlaced = blockPlaceEvent.getBlockPlaced();
+
+        if (blockPlaced.getType() == Material.TNT) {
+            blockPlaced.setType(blockPlaceEvent.getBlockReplacedState().getType());
+            TNTPrimed tnt = (TNTPrimed) blockPlaced.getWorld().spawnEntity(blockPlaced.getLocation(), EntityType.PRIMED_TNT);
+
+            Random r = new Random();
+            tnt.setFuseTicks(20 + r.nextInt(20));
+
+            if (inHand.getItemMeta().hasDisplayName())
+                tnt.setIsIncendiary(true);
+        }
     }
 
     @EventHandler
