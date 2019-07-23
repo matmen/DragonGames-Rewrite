@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import schedulers.Schedulers;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DamageHandler implements Listener {
 
@@ -44,7 +45,7 @@ public class DamageHandler implements Listener {
                 remaining.add(r);
 
         Bukkit.broadcastMessage(String.format(Messages.getString(killer == null ? "DamageHandler.KilledByOther" : "DamageHandler.KilledByHuman"), p.getName(),
-                killer == null ? p.getLastDamageCause().getCause().name() : killer.getName(),
+                killer == null ? Objects.requireNonNull(p.getLastDamageCause()).getCause().name() : killer.getName(),
                 (killer == null ? 0 : killer.getHealth()) / 2));
 
         if (remaining.size() <= 1) {
@@ -62,10 +63,12 @@ public class DamageHandler implements Listener {
 
         p.setHealth(20.0D);
         p.setVelocity(new Vector(0, 3, 0));
-        p.getWorld().playSound(p.getLocation(), Sound.WITHER_SHOOT, 50.0f, 50.0f);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 50.0f, 50.0f);
         p.setGameMode(GameMode.SPECTATOR);
         e.setDeathMessage(null);
-        p.getLocation().getWorld().strikeLightningEffect(p.getLocation());
+        p.getWorld().strikeLightningEffect(p.getLocation());
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(INSTANCE, () -> p.spigot().respawn(), 1);
     }
 
 }

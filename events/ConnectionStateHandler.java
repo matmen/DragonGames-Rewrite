@@ -4,6 +4,8 @@ import enums.GameState;
 import main.DragonGames;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +31,7 @@ public class ConnectionStateHandler implements Listener {
         Player p = joinEvent.getPlayer();
 
         if (INSTANCE.getGameState().kickMessage != null) {
-            joinEvent.setJoinMessage(null);
+            joinEvent.setJoinMessage("");
             p.kickPlayer(INSTANCE.getGameState().kickMessage);
         }
 
@@ -41,6 +43,9 @@ public class ConnectionStateHandler implements Listener {
         p.getInventory().clear();
         p.getInventory().setArmorContents(null);
         p.updateInventory();
+
+        AttributeInstance attackSpeed = p.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        if (attackSpeed != null) attackSpeed.setBaseValue(16);
 
         p.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 
@@ -86,7 +91,7 @@ public class ConnectionStateHandler implements Listener {
         if (p.getGameMode() == GameMode.SPECTATOR || INSTANCE.getGameState() == GameState.WAITING_FOR_RESTART)
             return;
 
-        leaveEvent.setQuitMessage(null);
+        leaveEvent.setQuitMessage("");
         Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(p,
                 new ArrayList<>(Arrays.asList(p.getInventory().getContents())), (int) p.getExp(), null));
     }

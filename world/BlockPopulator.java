@@ -22,7 +22,7 @@ class BlockPopulator extends org.bukkit.generator.BlockPopulator {
     }
 
     @Override
-    public void populate(World world, @NotNull Random random, Chunk chunk) {
+    public void populate(@NotNull World world, @NotNull Random random, @NotNull Chunk chunk) {
         generateVeins(random, chunk);
 
         generateEggs(random, chunk);
@@ -48,7 +48,7 @@ class BlockPopulator extends org.bukkit.generator.BlockPopulator {
 
                 while (isStone || (placed < 2 && tries < 6)) {
                     if (isStone) {
-                        chunk.getBlock(x, y, z).setType(veinType);
+                        chunk.getBlock(x, y, z).setType(veinType, false);
                         placed++;
                     } else tries++;
 
@@ -81,7 +81,6 @@ class BlockPopulator extends org.bukkit.generator.BlockPopulator {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private void generateGrass(Random random, Chunk chunk) {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -91,11 +90,10 @@ class BlockPopulator extends org.bukkit.generator.BlockPopulator {
                             random.nextDouble() / Math.max(y - ChunkGenerator.seaLevel, 1) < 0.1) continue;
 
                     Block g = chunk.getBlock(x, y, z);
-                    if (g.getType() != Material.GRASS) continue;
+                    if (g.getType() != Material.GRASS_BLOCK) continue;
 
                     Block b = chunk.getBlock(x, y + 1, z);
-                    b.setType(Material.LONG_GRASS);
-                    b.setData((byte) 1);
+                    b.setType(Material.GRASS, false);
                 }
             }
         }
@@ -108,9 +106,9 @@ class BlockPopulator extends org.bukkit.generator.BlockPopulator {
                     int y = getHighestBlockAt(chunk, x, z);
 
                     Block g = chunk.getBlock(x, y, z);
-                    if (g.getType() != Material.GRASS) continue;
+                    if (g.getType() != Material.GRASS_BLOCK) continue;
 
-                    chunk.getBlock(x, y + 1, z).setType(Material.DRAGON_EGG);
+                    chunk.getBlock(x, y + 1, z).setType(Material.DRAGON_EGG, false);
                 }
             }
         }
@@ -126,7 +124,7 @@ class BlockPopulator extends org.bukkit.generator.BlockPopulator {
                 int y = getHighestBlockAt(chunk, x, z);
 
                 Block b = chunk.getBlock(x, y, z);
-                if (b.getType() != Material.GRASS) continue;
+                if (b.getType() != Material.GRASS_BLOCK) continue;
 
                 TreeType treeType = treeTypes[(int) Math.floor(Math.pow(random.nextDouble(), 2) * treeTypes.length)];
                 chunk.getWorld().generateTree(chunk.getBlock(x, y, z).getLocation(), treeType);

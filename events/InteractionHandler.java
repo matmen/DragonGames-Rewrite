@@ -3,11 +3,10 @@ package events;
 import enums.GameState;
 import enums.ItemChances;
 import main.DragonGames;
-import net.minecraft.server.v1_8_R3.EnumParticle;
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -39,7 +38,8 @@ public class InteractionHandler implements Listener {
         if (e.getItem() == null)
             return;
 
-        Material itemType = e.getItem().getType();
+        ItemStack item = e.getItem();
+        Material itemType = item.getType();
 
         if (itemType == ItemChances.TRACKER.item.getType()) {
             Player nearest = null;
@@ -59,7 +59,7 @@ public class InteractionHandler implements Listener {
                 p.setCompassTarget(nearest.getLocation());
             }
         } else if (itemType == ItemChances.FORCEFIELD.item.getType()) {
-            p.getWorld().playSound(p.getLocation(), Sound.WITHER_SHOOT, 50, 1);
+            p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 50, 1);
 
             for (Player toApply : Bukkit.getOnlinePlayers()) {
                 double distance = toApply.getLocation().distance(p.getLocation());
@@ -72,20 +72,16 @@ public class InteractionHandler implements Listener {
                     continue;
 
                 toApply.setVelocity(toApply.getVelocity().multiply(-5 / distance).setY(1 / distance));
-                playParticleEffectAtLocation(toApply.getLocation(), distance < 10 ? EnumParticle.EXPLOSION_HUGE : distance < 15 ? EnumParticle.EXPLOSION_LARGE : EnumParticle.EXPLOSION_NORMAL);
+                toApply.getWorld().spawnParticle(distance < 10 ? Particle.EXPLOSION_HUGE : distance < 15 ? Particle.EXPLOSION_LARGE : Particle.EXPLOSION_NORMAL, toApply.getLocation(), 1);
             }
 
-            int newAmount = p.getItemInHand().getAmount() - 1;
-            if (newAmount == 0)
-                p.setItemInHand(null);
-            else
-                p.getItemInHand().setAmount(newAmount);
+            item.setAmount(item.getAmount() - 1);
 
             p.updateInventory();
         } else if (itemType == ItemChances.FIRE_GRENADE.item.getType()) {
             e.setCancelled(true);
-            playParticleEffectAtLocation(p.getLocation(), EnumParticle.FLAME, new Vector(2, 0, 2), 10);
-            p.getWorld().playSound(p.getLocation(), Sound.GHAST_FIREBALL, 50, 0);
+            p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 10, 2, 0, 2);
+            p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GHAST_SHOOT, 50, 0);
 
             for (Player target : Bukkit.getOnlinePlayers()) {
                 if (target == p || target.getGameMode() != GameMode.SURVIVAL)
@@ -99,11 +95,7 @@ public class InteractionHandler implements Listener {
                 target.setFireTicks((int) (80 / distance));
             }
 
-            int newAmount = p.getItemInHand().getAmount() - 1;
-            if (newAmount == 0)
-                p.setItemInHand(null);
-            else
-                p.getItemInHand().setAmount(newAmount);
+            item.setAmount(item.getAmount() - 1);
 
             p.updateInventory();
         } else if (itemType == ItemChances.SWITCHER.item.getType()) {
@@ -128,30 +120,27 @@ public class InteractionHandler implements Listener {
                 Player[] affectedPlayers = {p, nearest};
 
                 for (Player affected : affectedPlayers) {
-                    affected.getWorld().playSound(p.getLocation(), Sound.ENDERMAN_TELEPORT, 50, 0);
-                    playParticleEffectAtLocation(affected.getLocation(), EnumParticle.PORTAL, new Vector(2, 3, 2), 10);
+                    affected.getWorld().playSound(affected.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 50, 0);
+                    affected.getWorld().spawnParticle(Particle.PORTAL, affected.getLocation(), 10, 2, 3, 2);
                 }
 
-                int newAmount = p.getItemInHand().getAmount() - 1;
-                if (newAmount == 0)
-                    p.setItemInHand(null);
-                else
-                    p.getItemInHand().setAmount(newAmount);
+                item.setAmount(item.getAmount() - 1);
 
                 p.updateInventory();
             }
         } else if (itemType == ItemChances.BANDAGE.item.getType()) {
             e.setCancelled(true);
 
-            p.setHealth(Math.max(Math.min(p.getHealth() + 8, p.getMaxHealth() - 4), p.getHealth()));
-            p.getWorld().playSound(p.getLocation(), Sound.DIG_WOOL, 50, 0);
-            playParticleEffectAtLocation(p.getLocation(), EnumParticle.VILLAGER_HAPPY, new Vector(1, 3, 1), 5);
+            AttributeInstance maxHealthAttrib = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            double maxHealth = 20;
+            if (maxHealthAttrib != null)
+                maxHealth = maxHealthAttrib.getValue();
 
-            int newAmount = p.getItemInHand().getAmount() - 1;
-            if (newAmount == 0)
-                p.setItemInHand(null);
-            else
-                p.getItemInHand().setAmount(newAmount);
+            p.setHealth(Math.max(Math.min(p.getHealth() + 8, maxHealth - 4), p.getHealth()));
+            p.getWorld().playSound(p.getLocation(), Sound.BLOCK_WOOL_BREAK, 50, 0);
+            p.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, p.getLocation(), 5, 1, 3, 1);
+
+            item.setAmount(item.getAmount() - 1);
         }
     }
 
@@ -177,7 +166,7 @@ public class InteractionHandler implements Listener {
             Random r = new Random();
             tnt.setFuseTicks(20 + r.nextInt(20));
 
-            if (inHand.getItemMeta().hasDisplayName())
+            if (inHand.getItemMeta() != null && inHand.getItemMeta().hasDisplayName())
                 tnt.setIsIncendiary(true);
         }
     }
@@ -195,13 +184,14 @@ public class InteractionHandler implements Listener {
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
             handleItemRightClick(playerInteractEvent);
 
-        if (action != Action.RIGHT_CLICK_BLOCK)
+        if (action != Action.RIGHT_CLICK_BLOCK || playerInteractEvent.getClickedBlock() == null)
             return;
 
         Block b = playerInteractEvent.getClickedBlock();
         Location loc = b.getLocation();
         String location = String.format(Messages.getString("InteractionHandler.CrateLocationKey"), loc.getBlockX(),
                 loc.getBlockZ());
+
         if (b.getType() == Material.DRAGON_EGG) {
             playerInteractEvent.setCancelled(true);
 
@@ -222,15 +212,15 @@ public class InteractionHandler implements Listener {
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(INSTANCE, () -> {
                 b.setType(Material.AIR);
-                loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 2.5f, true, true);
-                loc.getWorld().getHighestBlockAt(loc).setType(Material.OBSIDIAN);
+                b.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 2.5f, true, true);
+                b.getWorld().getHighestBlockAt(loc).setType(Material.OBSIDIAN);
                 for (HumanEntity viewer : inv.getViewers())
                     viewer.closeInventory();
             }, 200);
         } else if (b.getType() == Material.OBSIDIAN && INSTANCE.crates.containsKey(location)) {
             b.setType(Material.BEDROCK);
             p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 2), true);
-            p.playSound(loc, Sound.SHOOT_ARROW, 50, 25);
+            p.playSound(loc, Sound.ENTITY_ARROW_SHOOT, 50, 25);
         }
     }
 
@@ -238,7 +228,8 @@ public class InteractionHandler implements Listener {
     public void onEvent(PlayerMoveEvent playerMoveEvent) {
         Player p = playerMoveEvent.getPlayer();
         Location from = playerMoveEvent.getFrom().clone();
-        Location to = playerMoveEvent.getTo().clone();
+        Location to = from;
+        if (playerMoveEvent.getTo() != null) to = playerMoveEvent.getTo().clone();
 
         if (INSTANCE.getGameState() == GameState.WAITING_FOR_PLAYERS) {
             if (to.getY() < 64) {
@@ -246,8 +237,7 @@ public class InteractionHandler implements Listener {
                 Vector off = spawnLocation.toVector().subtract(to.toVector()).normalize();
 
                 p.setVelocity(new Vector(off.getX(), 0.75, off.getZ()));
-                p.setFallDistance(0);
-                p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 25, 50);
+                p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 10, 50);
             }
 
             return;
@@ -281,37 +271,8 @@ public class InteractionHandler implements Listener {
 
     private void outOfMap(@NotNull Player p, Vector v) {
         p.setVelocity(v);
-        p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 30.0F, 50.0F);
+        p.playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 30.0F, 50.0F);
         p.sendMessage(Messages.getString("InteractionHandler.EndOfMap"));
-    }
-
-    private void playParticleEffectAtLocation(Location l, EnumParticle particle) {
-        playParticleEffectAtLocation(l, particle, 1);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private void playParticleEffectAtLocation(Location l, EnumParticle particle, int count) {
-        playParticleEffectAtLocation(l, particle, new Vector(), count);
-    }
-
-    private void playParticleEffectAtLocation(Location l, EnumParticle particle, Vector offset, int count) {
-        playParticleEffectAtLocation(l, particle, offset, 0, count);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private void playParticleEffectAtLocation(Location l, EnumParticle particle, Vector offset, float speed, int count) {
-        float x = (float) l.getX();
-        float y = (float) l.getY();
-        float z = (float) l.getZ();
-
-        float xOff = (float) offset.getX();
-        float yOff = (float) offset.getX();
-        float zOff = (float) offset.getX();
-
-        PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(particle, true, x, y, z, xOff, yOff, zOff, speed, count);
-
-        for (Player particleTarget : Bukkit.getOnlinePlayers())
-            ((CraftPlayer) particleTarget).getHandle().playerConnection.sendPacket(particlePacket);
     }
 
 }

@@ -10,6 +10,8 @@ import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import utils.PlayerTeleporter;
 
+import java.util.Objects;
+
 public class Schedulers {
 
     private static final int[] announceAt = {20, 10, 5, 3, 2, 1};
@@ -18,7 +20,7 @@ public class Schedulers {
 
     private static void runGameCountdown() {
         INSTANCE.setGameState(GameState.IN_PROGRESS_PVP);
-        WorldBorder border = Bukkit.getWorld("active_map").getWorldBorder();
+        WorldBorder border = Objects.requireNonNull(Bukkit.getWorld("active_map")).getWorldBorder();
         border.setSize(100, (long) (GameState.IN_PROGRESS_PVP.delay * 0.9));
         border.setDamageBuffer(1);
         border.setDamageAmount(0.05);
@@ -53,7 +55,7 @@ public class Schedulers {
             if (INSTANCE.remainingGraceTime == 0) {
                 Bukkit.getScheduler().cancelTask(activeSchedulerID);
                 for (Player p : Bukkit.getOnlinePlayers())
-                    p.playSound(p.getLocation(), Sound.CREEPER_HISS, 50, 100);
+                    p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_HURT, 50, 100);
                 runGameCountdown();
             }
         }, 0, 20);
@@ -61,7 +63,7 @@ public class Schedulers {
 
     public static void runLobbyCountdown() {
         INSTANCE.setGameState(GameState.WAITING_FOR_PLAYERS);
-        WorldBorder border = Bukkit.getWorld("active_map").getWorldBorder();
+        WorldBorder border = Objects.requireNonNull(Bukkit.getWorld("active_map")).getWorldBorder();
         border.reset();
 
         activeSchedulerID = Bukkit.getScheduler().scheduleSyncRepeatingTask(INSTANCE, () -> {
@@ -87,7 +89,7 @@ public class Schedulers {
                 Bukkit.getScheduler().cancelTask(activeSchedulerID);
 
                 for (Player p : Bukkit.getOnlinePlayers())
-                    p.playSound(p.getLocation(), Sound.NOTE_PLING, 50, 100);
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 50, 100);
 
                 runSpawnCountdown();
             }
@@ -117,7 +119,7 @@ public class Schedulers {
     private static void runSpawnCountdown() {
         INSTANCE.setGameState(GameState.IN_PROGRESS_SPAWNED);
 
-        World w = Bukkit.getWorld("active_map");
+        World w = Objects.requireNonNull(Bukkit.getWorld("active_map"));
         int borderSize = (int) PlayerTeleporter.getBorderSize(Bukkit.getOnlinePlayers().size());
         PlayerTeleporter.teleportPlayers(w, borderSize);
 
@@ -133,7 +135,7 @@ public class Schedulers {
                 Bukkit.broadcastMessage(DragonGames.prefix + String.format(
                         Messages.getString("Schedulers.GameStartsIn"), INSTANCE.remainingSpawnTime));
                 for (Player p : Bukkit.getOnlinePlayers())
-                    p.playSound(p.getLocation(), Sound.NOTE_PLING, 50, 100);
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 50, 100);
             }
 
             for (Player p : Bukkit.getOnlinePlayers())
@@ -142,7 +144,7 @@ public class Schedulers {
             if (INSTANCE.remainingSpawnTime == 0) {
                 Bukkit.getScheduler().cancelTask(activeSchedulerID);
                 for (Player p : Bukkit.getOnlinePlayers())
-                    p.playSound(p.getLocation(), Sound.LEVEL_UP, 50, 37.5f);
+                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 50, 37.5f);
                 runGraceCountdown();
             }
         }, 0, 20);

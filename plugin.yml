@@ -4,6 +4,7 @@ author: matmen
 website: almost-never.online
 
 main: main.DragonGames
+api-version: 1.13
 
 commands:
   dragongames:

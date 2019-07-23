@@ -18,18 +18,25 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
     private static final double frequency = 0.5;
     private static final double amplitude = 0.5;
 
+    @NotNull
     @Override
-    public ChunkData generateChunkData(@NotNull World world, Random random, int chunkX, int chunkZ, BiomeGrid biome) {
+    public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid biome) {
         SimplexOctaveGenerator heightmapGenerator = new SimplexOctaveGenerator(new Random(world.getSeed()), 8);
         heightmapGenerator.setScale(0.01D);
-
-        SimplexOctaveGenerator dirtThicknessGenerator = new SimplexOctaveGenerator(new Random(world.getSeed() + 1), 6);
-        dirtThicknessGenerator.setScale(0.01D);
 
         SimplexOctaveGenerator caveLevelGenerator = new SimplexOctaveGenerator(new Random(world.getSeed()), 8);
         caveLevelGenerator.setScale(0.008D);
 
-        SimplexOctaveGenerator caveHeightGenerator = new SimplexOctaveGenerator(new Random(world.getSeed() + 2), 4);
+        SimplexOctaveGenerator oceanSandGenerator = new SimplexOctaveGenerator(new Random(world.getSeed() + 1), 8);
+        oceanSandGenerator.setScale(0.01D);
+
+        SimplexOctaveGenerator oceanBedThicknessGenerator = new SimplexOctaveGenerator(new Random(world.getSeed() + 2), 8);
+        oceanBedThicknessGenerator.setScale(0.01D);
+
+        SimplexOctaveGenerator dirtThicknessGenerator = new SimplexOctaveGenerator(new Random(world.getSeed() + 3), 6);
+        dirtThicknessGenerator.setScale(0.01D);
+
+        SimplexOctaveGenerator caveHeightGenerator = new SimplexOctaveGenerator(new Random(world.getSeed() + 4), 4);
         caveHeightGenerator.setScale(0.1D);
 
         ChunkData chunk = createChunkData(world);
@@ -41,7 +48,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
                 int currentHeight = (int) (heightmapGenerator.noise(chunkX * 16 + x, chunkZ * 16 + z, frequency, amplitude) * scale) + defaultHeight;
                 int maxHeight = currentHeight;
 
-                chunk.setBlock(x, currentHeight, z, Material.GRASS);
+                chunk.setBlock(x, currentHeight, z, Material.GRASS_BLOCK);
                 currentHeight--;
 
                 int dirtTo = currentHeight - ((int) Math.abs(dirtThicknessGenerator.noise(chunkX * 16 + x, chunkZ * 16 + z, frequency, amplitude) * 2) + 1);
@@ -58,20 +65,19 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 
                 chunk.setBlock(x, 0, z, Material.BEDROCK);
 
-                for (currentHeight = seaLevel; currentHeight <= seaLevel; currentHeight--) {
-                    if (chunk.getType(x, currentHeight, z) == Material.AIR) {
-                        chunk.setBlock(x, currentHeight, z, Material.STATIONARY_WATER);
-                        world.setBiome(x, z, Biome.RIVER);
-                    } else {
-                        if (currentHeight == seaLevel) break;
-                        if (chunk.getType(x, currentHeight + random.nextInt(3), z) == Material.GRAVEL) break;
+                if (maxHeight < seaLevel) {
+                    int oceanBedThickness = (int) Math.abs(oceanBedThicknessGenerator.noise(chunkX * 16 + x, chunkZ * 16 + z, frequency, amplitude) * 3) + 1;
 
-                        if (seaLevel - currentHeight < 2)
-                            chunk.setBlock(x, currentHeight, z, Material.SAND);
-                        else if (seaLevel - currentHeight < random.nextInt(2) + 2)
-                            chunk.setBlock(x, currentHeight, z, Material.SAND);
-                        else
-                            chunk.setBlock(x, currentHeight, z, Material.GRAVEL);
+                    for (currentHeight = seaLevel; currentHeight > maxHeight - oceanBedThickness; currentHeight--) {
+                        if (currentHeight > maxHeight) {
+                            chunk.setBlock(x, currentHeight, z, Material.WATER);
+                            world.setBiome(x, z, Biome.RIVER);
+                        } else {
+                            if (oceanSandGenerator.noise(chunkX * 16 + x, chunkZ * 16 + z, frequency, amplitude) > 0.5)
+                                chunk.setBlock(x, currentHeight, z, Material.SAND);
+                            else
+                                chunk.setBlock(x, currentHeight, z, Material.GRAVEL);
+                        }
                     }
                 }
 
@@ -91,8 +97,9 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
         return chunk;
     }
 
+    @NotNull
     @Override
-    public List<org.bukkit.generator.BlockPopulator> getDefaultPopulators(World world) {
+    public List<org.bukkit.generator.BlockPopulator> getDefaultPopulators(@NotNull World world) {
         //noinspection ArraysAsListWithZeroOrOneArgument
         return Arrays.asList(new BlockPopulator());
     }
