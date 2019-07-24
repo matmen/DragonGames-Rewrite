@@ -1,18 +1,22 @@
-package main;
+package me.matmen.DragonGames.main;
 
-import enums.GameState;
-import events.ConnectionStateHandler;
-import events.DamageHandler;
-import events.InteractionHandler;
-import events.MessageHandler;
-import net.minecraft.server.v1_13_R2.EntityPlayer;
+import me.matmen.DragonGames.enums.GameState;
+import me.matmen.DragonGames.events.ConnectionStateHandler;
+import me.matmen.DragonGames.events.DamageHandler;
+import me.matmen.DragonGames.events.InteractionHandler;
+import me.matmen.DragonGames.events.MessageHandler;
+import me.matmen.DragonGames.schedulers.Schedulers;
+import me.matmen.DragonGames.utils.CrateFiller;
+import me.matmen.DragonGames.utils.PlayerTeleporter;
+import me.matmen.DragonGames.world.ChunkGenerator;
+import net.minecraft.server.v1_14_R1.EntityPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -20,10 +24,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import schedulers.Schedulers;
-import utils.CrateFiller;
-import utils.PlayerTeleporter;
-import world.ChunkGenerator;
 
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -110,11 +110,11 @@ public class DragonGames extends JavaPlugin {
         long lastMessage = System.currentTimeMillis();
         for (int spawnOffsetX = -chunkCount; spawnOffsetX <= chunkCount; spawnOffsetX++) {
             for (int spawnOffsetZ = -chunkCount; spawnOffsetZ <= chunkCount; spawnOffsetZ++) {
-                activeMap.loadChunk(spawnOffsetX, spawnOffsetZ, true);
+                activeMap.getChunkAtAsync(spawnOffsetX, spawnOffsetZ);
                 double ratio = chunksLoaded++ / Math.pow(chunkCount * 2, 2);
 
                 if (ratio - lastRatio > 0.1 && System.currentTimeMillis() - lastMessage > 1000) {
-                    getLogger().log(Level.INFO, String.format("Preparing play area for %1$s, %2$d%%", activeMap.getName(), (int) (ratio * 100)));
+                    getLogger().log(Level.INFO, String.format("(Async) Preparing play area for %1$s, %2$d%%", activeMap.getName(), (int) (ratio * 100)));
                     lastRatio = ratio;
                     lastMessage = System.currentTimeMillis();
                 }

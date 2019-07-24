@@ -3,7 +3,7 @@ version: 4.0.0
 author: matmen
 website: almost-never.online
 
-main: main.DragonGames
+main: me.matmen.DragonGames.main.DragonGames
 api-version: 1.13
 
 commands:

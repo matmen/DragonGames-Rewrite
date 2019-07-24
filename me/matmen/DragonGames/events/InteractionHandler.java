@@ -1,8 +1,8 @@
-package events;
+package me.matmen.DragonGames.events;
 
-import enums.GameState;
-import enums.ItemChances;
-import main.DragonGames;
+import me.matmen.DragonGames.enums.GameState;
+import me.matmen.DragonGames.enums.ItemChances;
+import me.matmen.DragonGames.main.DragonGames;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -228,8 +228,7 @@ public class InteractionHandler implements Listener {
     public void onEvent(PlayerMoveEvent playerMoveEvent) {
         Player p = playerMoveEvent.getPlayer();
         Location from = playerMoveEvent.getFrom().clone();
-        Location to = from;
-        if (playerMoveEvent.getTo() != null) to = playerMoveEvent.getTo().clone();
+        Location to = playerMoveEvent.getTo().clone();
 
         if (INSTANCE.getGameState() == GameState.WAITING_FOR_PLAYERS) {
             if (to.getY() < 64) {

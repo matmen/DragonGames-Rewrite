@@ -1,6 +1,6 @@
-package utils;
+package me.matmen.DragonGames.utils;
 
-import enums.ItemChances;
+import me.matmen.DragonGames.enums.ItemChances;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

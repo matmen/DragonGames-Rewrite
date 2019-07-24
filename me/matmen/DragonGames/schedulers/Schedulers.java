@@ -1,14 +1,14 @@
-package schedulers;
+package me.matmen.DragonGames.schedulers;
 
-import enums.GameState;
-import main.DragonGames;
+import me.matmen.DragonGames.enums.GameState;
+import me.matmen.DragonGames.main.DragonGames;
+import me.matmen.DragonGames.utils.PlayerTeleporter;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
-import utils.PlayerTeleporter;
 
 import java.util.Objects;
 

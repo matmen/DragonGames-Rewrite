@@ -1,4 +1,4 @@
-package enums;
+package me.matmen.DragonGames.enums;
 
 import org.jetbrains.annotations.Contract;
 
@@ -6,8 +6,8 @@ public enum GameState {
     STARTING(Messages.getString("GameState.KickMessage.Starting"), false, false, false, false, 0, null,
             Messages.getString("GameState.MOTDRestarting")),
     WAITING_FOR_PLAYERS(null, true, true, false, false, 30, null, Messages.getString("GameState.MOTDLobby")),
-    IN_PROGRESS_SPAWNED(Messages.getString("GameState.KickMessage.InProgress"), false, false, false, false, 10,
-            String.format(Messages.getString("GameState.Broadcast.StartsIn"), 10),
+    IN_PROGRESS_SPAWNED(Messages.getString("GameState.KickMessage.InProgress"), false, false, false, false, 20,
+            String.format(Messages.getString("GameState.Broadcast.StartsIn"), 20),
             Messages.getString("GameState.MOTDProgressSpawned")),
     IN_PROGRESS_GRACE_PERIOD(Messages.getString("GameState.KickMessage.InProgress"), false, true, false, true, 30,
             String.format(Messages.getString("GameState.Broadcast.Started"), 30),

@@ -1,7 +1,7 @@
-package events;
+package me.matmen.DragonGames.events;
 
-import enums.GameState;
-import main.DragonGames;
+import me.matmen.DragonGames.enums.GameState;
+import me.matmen.DragonGames.main.DragonGames;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;

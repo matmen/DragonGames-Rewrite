@@ -1,4 +1,4 @@
-package events;
+package me.matmen.DragonGames.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

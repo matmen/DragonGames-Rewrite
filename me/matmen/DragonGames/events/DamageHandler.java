@@ -1,7 +1,8 @@
-package events;
+package me.matmen.DragonGames.events;
 
-import enums.GameState;
-import main.DragonGames;
+import me.matmen.DragonGames.enums.GameState;
+import me.matmen.DragonGames.main.DragonGames;
+import me.matmen.DragonGames.schedulers.Schedulers;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -14,7 +15,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import schedulers.Schedulers;
 
 import java.util.ArrayList;
 import java.util.Objects;

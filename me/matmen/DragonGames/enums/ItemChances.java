@@ -1,4 +1,4 @@
-package enums;
+package me.matmen.DragonGames.enums;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,10 +17,12 @@ public enum ItemChances {
     LIGHTER(new ItemStack(Material.FLINT_AND_STEEL), ItemWeights.WEAPONS_WEIGHT / 4),
     FISHING_ROD(new ItemStack(Material.FISHING_ROD), ItemWeights.WEAPONS_WEIGHT / 6),
 
-    BOW(new ItemStack(Material.BOW), ItemWeights.WEAPONS_WEIGHT),
+    BOW(new ItemStack(Material.BOW), ItemWeights.WEAPONS_WEIGHT / 2),
+    CROSSBOW(new ItemStack(Material.CROSSBOW), ItemWeights.WEAPONS_WEIGHT / 16),
+    TRIDENT(new ItemStack(Material.TRIDENT), ItemWeights.WEAPONS_WEIGHT / 16),
     ARROW_SINGLE(new ItemStack(Material.ARROW, 1), ItemWeights.WEAPONS_WEIGHT),
     ARROW_DOUBLE(new ItemStack(Material.ARROW, 2), ItemWeights.WEAPONS_WEIGHT / 2),
-    ARROW_TRIPLE(new ItemStack(Material.ARROW, 3), ItemWeights.WEAPONS_WEIGHT / 2),
+    ARROW_TRIPLE(new ItemStack(Material.ARROW, 3), ItemWeights.WEAPONS_WEIGHT / 4),
     ARROW_QUADRUPLE(new ItemStack(Material.ARROW, 4), ItemWeights.WEAPONS_WEIGHT / 8),
 
     DIAMOND_HELMET(new ItemStack(Material.DIAMOND_HELMET), ItemWeights.ARMOR_WEIGHT / 8),
@@ -50,8 +52,8 @@ public enum ItemChances {
     COOKED_BEEF_SINGLE(new ItemStack(Material.COOKED_BEEF), ItemWeights.FOOD_WEIGHT / 3),
     COOKED_BEEF_DOUBLE(new ItemStack(Material.COOKED_BEEF, 2), ItemWeights.FOOD_WEIGHT / 5),
     COOKED_BEEF_TRIPLE(new ItemStack(Material.COOKED_BEEF, 3), ItemWeights.FOOD_WEIGHT / 8),
-    MUSHROOM_STEM(new ItemStack(Material.MUSHROOM_STEM), 1 * ItemWeights.FOOD_WEIGHT),
-    MELON(new ItemStack(Material.MELON), 1 * ItemWeights.FOOD_WEIGHT),
+    MUSHROOM_STEW(new ItemStack(Material.MUSHROOM_STEW), 1 * ItemWeights.FOOD_WEIGHT),
+    MELON_SLICE(new ItemStack(Material.MELON_SLICE), 1 * ItemWeights.FOOD_WEIGHT),
     COOKED_PORKCHOP_SINGLE(new ItemStack(Material.COOKED_PORKCHOP), ItemWeights.FOOD_WEIGHT / 2),
     COOKED_PORKCHOP_DOUBLE(new ItemStack(Material.COOKED_PORKCHOP, 2), ItemWeights.FOOD_WEIGHT / 3),
     COOKED_PORKCHOP_TRIPLE(new ItemStack(Material.COOKED_PORKCHOP, 3), ItemWeights.FOOD_WEIGHT / 6),

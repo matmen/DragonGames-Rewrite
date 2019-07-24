@@ -1,4 +1,4 @@
-package utils;
+package me.matmen.DragonGames.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -37,7 +37,7 @@ public class PlayerTeleporter {
                 loc.setY(y);
             }
 
-            p.teleport(loc);
+            p.teleportAsync(loc);
             p.setCompassTarget(loc);
 
             for (int i = 0; i <= r.nextInt(50) + 25; i++) {
