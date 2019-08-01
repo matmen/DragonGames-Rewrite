@@ -3,12 +3,18 @@ package me.matmen.DragonGames.schedulers;
 import me.matmen.DragonGames.enums.GameState;
 import me.matmen.DragonGames.main.DragonGames;
 import me.matmen.DragonGames.utils.PlayerTeleporter;
+import net.minecraft.server.v1_14_R1.EntityCreature;
+import net.minecraft.server.v1_14_R1.NBTBase;
+import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import net.minecraft.server.v1_14_R1.NavigationAbstract;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.WorldBorder;
+import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.Objects;
 
@@ -20,10 +26,9 @@ public class Schedulers {
 
     private static void runGameCountdown() {
         INSTANCE.setGameState(GameState.IN_PROGRESS_PVP);
-        WorldBorder border = Objects.requireNonNull(Bukkit.getWorld("active_map")).getWorldBorder();
+        World activeMap = Objects.requireNonNull(Bukkit.getWorld("active_map"));
+        WorldBorder border = activeMap.getWorldBorder();
         border.setSize(100, (long) (GameState.IN_PROGRESS_PVP.delay * 0.9));
-        border.setDamageBuffer(1);
-        border.setDamageAmount(0.05);
 
         activeSchedulerID = Bukkit.getScheduler().scheduleSyncRepeatingTask(INSTANCE, () -> {
             INSTANCE.remainingGameTime -= 1;

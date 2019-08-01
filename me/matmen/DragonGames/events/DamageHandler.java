@@ -25,18 +25,25 @@ public class DamageHandler implements Listener {
 
     @EventHandler
     public void onEvent(@NotNull EntityDamageEvent e) {
-        e.setCancelled(e.getEntityType() == EntityType.PLAYER && !INSTANCE.getGameState().canReceiveDamage);
+        e.setCancelled(!INSTANCE.getGameState().canReceiveDamage);
     }
 
     @EventHandler
     public void onEvent(@NotNull FoodLevelChangeEvent e) {
-        e.setCancelled(INSTANCE.getGameState() != GameState.IN_PROGRESS_PVP);
+        e.setCancelled(!INSTANCE.getGameState().canReceiveDamage);
     }
 
     @EventHandler
     public void onEvent(@NotNull PlayerDeathEvent e) {
         Player p = e.getEntity();
         Player killer = p.getKiller();
+
+        p.setHealth(20.0D);
+        p.setVelocity(new Vector(0, 3, 0));
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 50.0f, 50.0f);
+        p.setGameMode(GameMode.SPECTATOR);
+        e.setDeathMessage(null);
+        p.getWorld().strikeLightningEffect(p.getLocation());
 
         ArrayList<Player> remaining = new ArrayList<>();
 
@@ -60,13 +67,6 @@ public class DamageHandler implements Listener {
         } else
             Bukkit.broadcastMessage(
                     String.format(Messages.getString("DamageHandler.PlayersRemaining"), remaining.size()));
-
-        p.setHealth(20.0D);
-        p.setVelocity(new Vector(0, 3, 0));
-        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 50.0f, 50.0f);
-        p.setGameMode(GameMode.SPECTATOR);
-        e.setDeathMessage(null);
-        p.getWorld().strikeLightningEffect(p.getLocation());
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(INSTANCE, () -> p.spigot().respawn(), 1);
     }

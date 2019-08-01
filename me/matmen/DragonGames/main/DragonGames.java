@@ -30,7 +30,7 @@ import java.util.logging.Level;
 
 public class DragonGames extends JavaPlugin {
     public static final String prefix = Messages.getString("DragonGames.Prefix");
-    public static final int MIN_PLAYERS = 1;
+    public static final int MIN_PLAYERS = 2;
     public static DragonGames INSTANCE;
     public final CrateFiller crateFiller = new CrateFiller();
     public final HashMap<String, Inventory> crates = new HashMap<>();
@@ -82,6 +82,9 @@ public class DragonGames extends JavaPlugin {
             player.kickPlayer(GameState.WAITING_FOR_RESTART.kickMessage);
 
         Bukkit.getScheduler().cancelTasks(this);
+
+        for(World w : Bukkit.getWorlds())
+            Bukkit.unloadWorld(w, false);
     }
 
     @Override
@@ -104,23 +107,6 @@ public class DragonGames extends JavaPlugin {
             return;
         }
 
-        int chunkCount = (int) Math.ceil(PlayerTeleporter.getBorderSize(Bukkit.getServer().getMaxPlayers()) / 16 / 2);
-        int chunksLoaded = 0;
-        double lastRatio = 0;
-        long lastMessage = System.currentTimeMillis();
-        for (int spawnOffsetX = -chunkCount; spawnOffsetX <= chunkCount; spawnOffsetX++) {
-            for (int spawnOffsetZ = -chunkCount; spawnOffsetZ <= chunkCount; spawnOffsetZ++) {
-                activeMap.getChunkAtAsync(spawnOffsetX, spawnOffsetZ);
-                double ratio = chunksLoaded++ / Math.pow(chunkCount * 2, 2);
-
-                if (ratio - lastRatio > 0.1 && System.currentTimeMillis() - lastMessage > 1000) {
-                    getLogger().log(Level.INFO, String.format("(Async) Preparing play area for %1$s, %2$d%%", activeMap.getName(), (int) (ratio * 100)));
-                    lastRatio = ratio;
-                    lastMessage = System.currentTimeMillis();
-                }
-            }
-        }
-
         for (World w : Bukkit.getWorlds()) {
             w.setSpawnFlags(false, false);
             w.setAutoSave(false);
@@ -138,6 +124,23 @@ public class DragonGames extends JavaPlugin {
             for (Entity e : w.getEntities())
                 if (e.getType().isAlive())
                     e.remove();
+        }
+
+        int chunkCount = (int) Math.ceil(PlayerTeleporter.getBorderSize(Bukkit.getServer().getMaxPlayers()) / 16 / 2);
+        int chunksLoaded = 0;
+        double lastRatio = 0;
+        long lastMessage = System.currentTimeMillis();
+        for (int spawnOffsetX = -chunkCount; spawnOffsetX <= chunkCount; spawnOffsetX++) {
+            for (int spawnOffsetZ = -chunkCount; spawnOffsetZ <= chunkCount; spawnOffsetZ++) {
+                activeMap.getChunkAtAsync(spawnOffsetX, spawnOffsetZ);
+                double ratio = chunksLoaded++ / Math.pow(chunkCount * 2, 2);
+
+                if (ratio - lastRatio > 0.1 && System.currentTimeMillis() - lastMessage > 1000) {
+                    getLogger().log(Level.INFO, String.format("(Async) Preparing play area for %1$s, %2$d%%", activeMap.getName(), (int) (ratio * 100)));
+                    lastRatio = ratio;
+                    lastMessage = System.currentTimeMillis();
+                }
+            }
         }
 
         Schedulers.runLobbyCountdown();

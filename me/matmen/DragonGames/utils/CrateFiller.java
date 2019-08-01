@@ -1,5 +1,6 @@
 package me.matmen.DragonGames.utils;
 
+import me.matmen.DragonGames.enums.Enchantments;
 import me.matmen.DragonGames.enums.ItemChances;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,7 +24,17 @@ public class CrateFiller {
     }
 
     public ItemStack getRandomItem() {
-        return items.get(random.nextInt(items.size()));
+        ItemStack item = items.get(random.nextInt(items.size()));
+
+        for (Enchantments e : Enchantments.values())
+            if (e.type == item.getType()) {
+                int enchantmentLevel = (int) Math.round(Math.pow(random.nextDouble(), 14) * e.maxLevel);
+
+                if(enchantmentLevel > 0)
+                    item.addEnchantment(e.enchantment, enchantmentLevel);
+            }
+
+        return item;
     }
 
 }

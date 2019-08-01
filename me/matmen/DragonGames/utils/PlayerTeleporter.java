@@ -2,16 +2,19 @@ package me.matmen.DragonGames.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class PlayerTeleporter {
 
     private static final EntityType[] foodEntities = {EntityType.SHEEP, EntityType.PIG, EntityType.COW, EntityType.CHICKEN};
+    private static final Material[] validGrounds = {Material.GRASS_BLOCK, Material.GRASS};
 
     public static void teleportPlayers(World w, int borderSize) {
         Random r = new Random();
@@ -29,7 +32,7 @@ public class PlayerTeleporter {
                 loc = new Location(w, x + .5, 0, z + .5);
 
                 int y = w.getHighestBlockYAt(loc);
-                if (!w.getBlockAt(x, y - 1, z).getType().isSolid()) {
+                if (!Arrays.asList(validGrounds).contains(w.getBlockAt(x, y - 1, z).getType())) {
                     loc = null;
                     continue;
                 }
@@ -49,7 +52,7 @@ public class PlayerTeleporter {
     }
 
     public static double getBorderSize(int playerCount) {
-        return Math.max(Math.pow(playerCount, 1.25) * 10, 200);
+        return Math.max(Math.pow(playerCount, 1.25) * 20, 250);
     }
 
 }

@@ -184,7 +184,13 @@ public class InteractionHandler implements Listener {
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
             handleItemRightClick(playerInteractEvent);
 
-        if (action != Action.RIGHT_CLICK_BLOCK || playerInteractEvent.getClickedBlock() == null)
+        if (playerInteractEvent.getClickedBlock() == null)
+            return;
+
+        if(playerInteractEvent.getClickedBlock().getType() == Material.DRAGON_EGG)
+            playerInteractEvent.setCancelled(true);
+
+        if(action != Action.RIGHT_CLICK_BLOCK)
             return;
 
         Block b = playerInteractEvent.getClickedBlock();

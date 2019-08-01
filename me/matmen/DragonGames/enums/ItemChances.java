@@ -4,6 +4,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,10 +23,31 @@ public enum ItemChances {
     BOW(new ItemStack(Material.BOW), ItemWeights.WEAPONS_WEIGHT / 2),
     CROSSBOW(new ItemStack(Material.CROSSBOW), ItemWeights.WEAPONS_WEIGHT / 16),
     TRIDENT(new ItemStack(Material.TRIDENT), ItemWeights.WEAPONS_WEIGHT / 16),
-    ARROW_SINGLE(new ItemStack(Material.ARROW, 1), ItemWeights.WEAPONS_WEIGHT),
-    ARROW_DOUBLE(new ItemStack(Material.ARROW, 2), ItemWeights.WEAPONS_WEIGHT / 2),
-    ARROW_TRIPLE(new ItemStack(Material.ARROW, 3), ItemWeights.WEAPONS_WEIGHT / 4),
-    ARROW_QUADRUPLE(new ItemStack(Material.ARROW, 4), ItemWeights.WEAPONS_WEIGHT / 8),
+
+    ARROW_SINGLE(new ItemStack(Material.ARROW, 1), ItemWeights.PROJECTILES_WEIGHT),
+    ARROW_DOUBLE(new ItemStack(Material.ARROW, 2), ItemWeights.PROJECTILES_WEIGHT / 2),
+    ARROW_TRIPLE(new ItemStack(Material.ARROW, 3), ItemWeights.PROJECTILES_WEIGHT / 4),
+    ARROW_QUADRUPLE(new ItemStack(Material.ARROW, 4), ItemWeights.PROJECTILES_WEIGHT / 8),
+
+    SHARP_ARROW_SINGLE(getTippedArrow(PotionType.INSTANT_DAMAGE, 1), ItemWeights.PROJECTILES_WEIGHT / 6),
+    SHARP_ARROW_DOUBLE(getTippedArrow(PotionType.INSTANT_DAMAGE, 2), ItemWeights.PROJECTILES_WEIGHT / 12),
+    SHARP_ARROW_TRIPLE(getTippedArrow(PotionType.INSTANT_DAMAGE, 3), ItemWeights.PROJECTILES_WEIGHT / 18),
+    SHARP_ARROW_QUADRUPLE(getTippedArrow(PotionType.INSTANT_DAMAGE, 4), ItemWeights.PROJECTILES_WEIGHT / 24),
+
+    STICKY_ARROW_SINGLE(getTippedArrow(PotionType.SLOWNESS, 1), ItemWeights.PROJECTILES_WEIGHT / 4),
+    STICKY_ARROW_DOUBLE(getTippedArrow(PotionType.SLOWNESS, 2), ItemWeights.PROJECTILES_WEIGHT / 8),
+    STICKY_ARROW_TRIPLE(getTippedArrow(PotionType.SLOWNESS, 3), ItemWeights.PROJECTILES_WEIGHT / 16),
+    STICKY_ARROW_QUADRUPLE(getTippedArrow(PotionType.SLOWNESS, 4), ItemWeights.PROJECTILES_WEIGHT / 32),
+
+    POISONED_ARROW_SINGLE(getTippedArrow(PotionType.POISON, 1), ItemWeights.PROJECTILES_WEIGHT / 8),
+    POISONED_ARROW_DOUBLE(getTippedArrow(PotionType.POISON, 2), ItemWeights.PROJECTILES_WEIGHT / 16),
+    POISONED_ARROW_TRIPLE(getTippedArrow(PotionType.POISON, 3), ItemWeights.PROJECTILES_WEIGHT / 32),
+    POISONED_ARROW_QUADRUPLE(getTippedArrow(PotionType.POISON, 4), ItemWeights.PROJECTILES_WEIGHT / 64),
+
+    WEAKENING_ARROW_SINGLE(getTippedArrow(PotionType.WEAKNESS, 1), ItemWeights.PROJECTILES_WEIGHT / 8),
+    WEAKENING_ARROW_DOUBLE(getTippedArrow(PotionType.WEAKNESS, 2), ItemWeights.PROJECTILES_WEIGHT / 16),
+    WEAKENING_ARROW_TRIPLE(getTippedArrow(PotionType.WEAKNESS, 3), ItemWeights.PROJECTILES_WEIGHT / 32),
+    WEAKENING_ARROW_QUADRUPLE(getTippedArrow(PotionType.WEAKNESS, 4), ItemWeights.PROJECTILES_WEIGHT / 64),
 
     DIAMOND_HELMET(new ItemStack(Material.DIAMOND_HELMET), ItemWeights.ARMOR_WEIGHT / 8),
     DIAMOND_CHESTPLATE(new ItemStack(Material.DIAMOND_CHESTPLATE), ItemWeights.ARMOR_WEIGHT / 8),
@@ -106,10 +130,8 @@ public enum ItemChances {
     @SuppressWarnings("SameParameterValue")
     ItemChances(@NotNull ItemStack item, double probability, short damage) {
         ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            ((Damageable) meta).setDamage(damage);
-            item.setItemMeta(meta);
-        }
+        ((Damageable) meta).setDamage(damage);
+        item.setItemMeta(meta);
 
         this.item = item;
         this.probability = probability;
@@ -117,19 +139,26 @@ public enum ItemChances {
 
     ItemChances(@NotNull ItemStack item, double probability, String customName) {
         ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(customName);
-            item.setItemMeta(meta);
-        }
+        meta.setDisplayName(customName);
+        item.setItemMeta(meta);
 
         this.item = item;
         this.probability = probability;
+    }
+
+    private static ItemStack getTippedArrow(PotionType type, int count) {
+        ItemStack arrow = new ItemStack(Material.TIPPED_ARROW, count);
+        PotionMeta meta = (PotionMeta) arrow.getItemMeta();
+        meta.setBasePotionData(new PotionData(type, false, false));
+        arrow.setItemMeta(meta);
+        return arrow;
     }
 
 }
 
 class ItemWeights {
     static final double WEAPONS_WEIGHT = 1 / 2;
+    static final double PROJECTILES_WEIGHT = 1 / 4;
     static final double ARMOR_WEIGHT = 1 / 3;
     static final double FOOD_WEIGHT = 1;
     static final double SPECIAL_WEIGHT = 1 / 4;
